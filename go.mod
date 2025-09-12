@@ -1,4 +1,4 @@
-module ira-auth-client-go
+module ira-auth-go
 
 go 1.24.1
 
