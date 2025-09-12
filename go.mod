@@ -1,4 +1,4 @@
-module ira-auth-client-go
+module github.com/epicira/ira-auth-go
 
 go 1.24.1
 

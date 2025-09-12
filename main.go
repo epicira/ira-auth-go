@@ -9,8 +9,8 @@ import (
 	"os"
 	"time"
 
-	"ira-auth-client-go/pkg/rand"
-	"ira-auth-client-go/pkg/sanehttp"
+	"github.com/epicira/ira-auth-go/pkg/rand"
+	"github.com/epicira/ira-auth-go/pkg/sanehttp"
 
 	"github.com/jellydator/ttlcache/v3"
 	"golang.org/x/oauth2"
