@@ -1,5 +1,25 @@
 # IraAuth Client
 
+### Install
+
+```bash
+go get github.com/epicira/ira-auth-go@v0.3.0
+```
+
+### Configuration
+ira-auth.yaml
+```yaml
+{
+  "client_id": "ira_auth_go_example",
+  "client_secret": "wmEta4A+vfniXiUTfqwVjQ4/G6HXIqGxHX13jD27pZm7",
+  "access_token_name": "my_access_token", # Cookie name for storing access token
+  "app_url": "http://127.0.0.1:5678", # Application Base URL
+  "redirect_url": "http://127.0.0.1:5678/authenticate/callback",
+  "logout_url": "http://127.0.0.1:5678/logout",
+  "disable_auth": false
+}
+```
+
 ### Pseudocode example
 ```go
 iraAuth := auth.InitializeIraAuth("ira-auth.yaml")
