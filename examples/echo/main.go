@@ -26,12 +26,13 @@ func buildIntrospectMiddleware(iraAuth *IraAuth.IraAuth, authenticateHandler ech
 				log.Printf("could not obtain access token cookie: %s", err)
 				return authenticateHandler(c)
 			}
-			active, err := iraAuth.Introspect(cookie.Value)
+			response, err := iraAuth.Introspect(cookie.Value)
 			if err != nil {
 				log.Printf("token introspection failed: %s", err)
 				return authenticateHandler(c)
 			}
-			if active {
+			if response.Active {
+				c.Set("user_id", response.UserID)
 				return next(c)
 			}
 			return authenticateHandler(c)
@@ -65,10 +66,16 @@ func main() {
 		return c.Redirect(http.StatusMovedPermanently, iraAuth.AppURL)
 	})
 
-	protected := e.Group("/")
+	protected := e.Group("")
 	protected.Use(introspectMiddleware)
 
-	protected.File("", "index.html")
-
+	protected.File("/", "index.html")
+	protected.GET("/user", func(c echo.Context) error {
+		userID, ok := c.Get("user_id").(string)
+		if !ok {
+			return c.JSON(http.StatusInternalServerError, map[string]string{"message": "error"})
+		}
+		return c.JSON(http.StatusOK, map[string]string{"user_id": userID})
+	})
 	e.Logger.Fatal(e.StartTLS("127.0.0.1:5678", "certs/domain.crt", "certs/domain.key"))
 }

@@ -117,28 +117,30 @@ func (ia *IraAuth) HandleCallback(state, code string) (*IraAuthCookies, error) {
 }
 
 type IntrospectResponse struct {
-	Active bool `json:"active"`
+	Active bool   `json:"active"`
+	UserID string `json:"user_id"`
 }
 
-func (ia *IraAuth) Introspect(token string) (bool, error) {
+func (ia *IraAuth) Introspect(token string) (*IntrospectResponse, error) {
 	payload := map[string]string{
 		"token": token,
 	}
 	contents, err := json.Marshal(payload)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
 	resp, err := ia.httpClient.Post(ia.IntrospectURL, map[string]string{}, bytes.NewReader(contents), "application/json", &sanehttp.Options{})
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 	if resp.StatusCode != 200 {
-		return false, fmt.Errorf("received %d status code from introspect endpoint", resp.StatusCode)
+		return nil, fmt.Errorf("received %d status code from introspect endpoint", resp.StatusCode)
 	}
+
 	var introspectResponse IntrospectResponse
 	if err := json.Unmarshal(resp.Response, &introspectResponse); err != nil {
-		return false, err
+		return nil, err
 	}
-	return introspectResponse.Active, nil
+	return &introspectResponse, nil
 }
