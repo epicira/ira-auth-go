@@ -3,7 +3,7 @@
 ### Install
 
 ```bash
-go get github.com/epicira/ira-auth-go@v0.3.0
+go get github.com/epicira/ira-auth-go@v0.4.0
 ```
 
 ### Configuration
@@ -41,11 +41,12 @@ introspectMiddleware := func(iraAuth *IraAuth, httpHandler HttpHandler) HttpHand
         if err != nil {
             return authenticateHandler(r)
         }
-        active, err := iraAuth.Introspect(cookie.Value)
+        user, err := iraAuth.Introspect(cookie.Value)
         if err != nil {
             return authenticateHandler(r)
         }
-        if active {
+        if user.Active {
+            r.SetContext("user_id", user.UserID)
             return httpHandler(r)
         }
         return authenticateHandler(r)
