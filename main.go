@@ -25,6 +25,9 @@ type IraAuthConfig struct {
 	RedirectURL     string `yaml:"redirect_url"`
 	LogoutURL       string `yaml:"logout_url"`
 	DisableAuth     bool   `yaml:"disable_auth"`
+	IntrospectURL   string `yaml:"introspect_url"`
+	AuthURL         string `yaml:"auth_url"`
+	TokenURL        string `yaml:"token_url"`
 }
 
 type IraAuth struct {
@@ -51,15 +54,15 @@ func InitializeIraAuth(configFilePath string) (*IraAuth, error) {
 
 	return &IraAuth{
 		IraAuthConfig: config,
-		IntrospectURL: "https://auth.epicode.in/api/introspect",
+		IntrospectURL: config.IntrospectURL,
 		oauth2Client: &oauth2.Config{
 			ClientID:     config.ClientID,
 			ClientSecret: config.ClientSecret,
 			Scopes:       []string{"openid"},
 			RedirectURL:  config.RedirectURL,
 			Endpoint: oauth2.Endpoint{
-				AuthURL:  "https://auth.epicode.in/hydra/oauth2/auth",
-				TokenURL: "https://auth.epicode.in/hydra/oauth2/token",
+				AuthURL:  config.AuthURL,
+				TokenURL: config.TokenURL,
 			},
 		},
 		httpClient: sanehttp.NewClient(10*time.Second, true),
